@@ -115,7 +115,7 @@ Com isso, escolhemos as duas áreas limpas e ajustamos `CONFIG` no topo de `kore
   e um de 150 ms arrastando 99 px.
 - **Os 4 cantos bateram com a tela**: (51,63), (1004,80), (981,1376) e (86,1381). Os eixos estão certos.
   Os toques de propósito duraram de 350 a 520 ms.
-- **Áreas definitivas: avançar x 820-1072, voltar x 0-300, ambas y 900-1448; duração de 60 a 800 ms.** Simulando nas duas gravações,
+- **Áreas definitivas: avançar x 820-1072, voltar x 0-300, ambas y 900-1448; duração de 60 a 800 ms.** (Em 25/11 o mínimo passou para 45 ms; veja "Logs de 18/11 a 25/11/2026".) Simulando nas duas gravações,
   nenhum fantasma é aceito. O único toque aceito foi às 09h06 da manhã, quando o dono mexia no aparelho, então deve ter sido real.
 - Log arquivado em `D:\toques-2026-11-17-tarde.log`.
 - **Para encerrar uma gravação sem a página, basta reiniciar segurando o botão de ligar.** O log é salvo a cada toque.
@@ -145,5 +145,23 @@ Tudo o que estava pendente foi confirmado no Kindle:
   - O **envio de arquivos grandes** funciona.
   - O **consumo de bateria** foi aceitável.
 
-Nessa semana a gravação de toques ficou desligada, então não há mapa novo dos fantasmas. Nenhum fantasma virou página.
 Se o defeito piorar (páginas virando sozinhas), grave de novo pela página e gere o mapa com `tools/mapa_toques.py`.
+
+## Logs de 18/11 a 25/11/2026
+
+- **`crash.log`: nenhuma queda** desde a de 17/11, 15h14. O filtro foi instalado só na abertura de cada sessão.
+  Três sessões terminaram sem o "Tearing down" e sem erro (18/11 às 17h53 e 18h56, e a que começou às 18h56 só terminou em 23/11),
+  o que indica reinício pelo botão ou bateria esgotada, e não queda.
+- A reconexão aparece no log: em 23/11, das 15h52 às 16h04, o plugin religou o Wi-Fi a cada 2 min sem achar rede (provavelmente
+  fora do alcance de qualquer rede salva) e o Kindle dormiu às 16h06, como previsto.
+- **Houve uma gravação, mesmo sem intenção:** em 25/11, das 12h06 às 15h34, gravou 183 toques (arquivada em `D:\toques-2026-11-25.log`).
+  O Kindle ficou acordado nesse período, porque gravar impede a hibernação.
+- **A faixa horizontal continua em y 608-639** (123 toques, x de 84 a 1026). A linha de y≈496 não apareceu.
+- **A coluna mudou:** antes em x≈763 (só y 1290-1420), agora em **x 702-718, de y 112 a 1440** (a tela inteira de cima a baixo).
+  Fica fora das duas áreas: a área de avançar começa em x 820.
+- **Nenhum fantasma foi aceito.** Os 11 toques de 1 dedo dentro das áreas foram do dono: estão nos cantos de baixo, em posições variadas
+  (os fantasmas caem em linhas fixas) e vêm em pares de avançar e voltar. Eles duraram de **49 a 124 ms**, bem menos que os
+  toques lentos de calibração (350-520 ms). Com o mínimo de 60 ms, **2 dos 11 foram recusados**: nos dois casos o dono tocou de novo
+  um segundo depois.
+- **Ajuste: duração mínima de 60 para 45 ms.** Os únicos fantasmas já vistos dentro das áreas duraram 37 e 38 ms (noite de 17/11),
+  então continuam recusados. Simulando nas quatro gravações com 45 ms, nenhum fantasma passa.

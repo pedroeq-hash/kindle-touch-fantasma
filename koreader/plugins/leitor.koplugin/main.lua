@@ -28,10 +28,12 @@ local CONFIG = {
     pasta_livros = "/mnt/us/documents",
     log_toques = "/mnt/us/toques.log",
     -- {x1, y1, x2, y2}. Definitivas, a partir das gravações de 17/11/2026: fantasmas em y 480-650
-    -- e numa coluna em x≈763 (y 1290-1420, <60 ms ou arrastando)
+    -- e numa coluna em x≈763 (y 1290-1420, <60 ms ou arrastando); em 25/11 a coluna estava em x 702-718, de y 112 a 1440
     area_avancar = { 820, 900, 1072, 1448 },
     area_voltar = { 0, 900, 300, 1448 },
-    dur_min_ms = 60, -- o log mostrou 111 de 268 fantasmas com menos de 50 ms
+    -- 25/11/2026: toques reais do dono nas áreas duraram 49-124 ms (2 de 11 recusados com 60); os únicos fantasmas
+    -- já vistos dentro das áreas duraram 37 e 38 ms (gravação da noite de 17/11)
+    dur_min_ms = 45,
     dur_max_ms = 800, -- toques de propósito do dono duraram 350-520 ms
     mov_max_px = 40,
     upload_max_bytes = 200 * 1024 * 1024,
