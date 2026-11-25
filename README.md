@@ -40,24 +40,32 @@ celular ──► página web servida pelo Kindle ──► enviar, abrir, renom
 1. **Desbloqueio** do aparelho (jailbreak SpiderCat) para poder rodar o KOReader. Passo a passo em [docs/jailbreak.md](docs/jailbreak.md).
 2. **Plugin `leitor.koplugin`** ([main.lua](koreader/plugins/leitor.koplugin/main.lua)), que:
    - substitui o tratador de toque do KOReader por um **filtro**: só passa toque de **1 dedo**, com **duração humana**
-     (60 a 800 ms), **quase parado** (até 40 px) e **dentro de uma das duas áreas** (avançar e voltar);
+     (45 a 800 ms), **quase parado** (até 40 px) e **dentro de uma das duas áreas** (avançar e voltar);
    - **grava os eventos crus** do touch num log, para calibrar as áreas;
    - serve uma **página web** no próprio Kindle, usada pelo celular.
 
 ## Como as áreas foram escolhidas: com dados
 
-Com o filtro descartando quase tudo, o plugin gravou os toques crus em duas sessões (cerca de 20 min e 1h20).
+Com o filtro descartando quase tudo, o plugin gravou os toques crus em três sessões (17/11 e 25/11/2026, cerca de 5 horas no total).
 O script [tools/mapa_toques.py](tools/mapa_toques.py) reconstrói cada toque (protocolo multitouch tipo B do Linux) e gera um mapa de calor em SVG.
+Os logs estão em [dados/](dados/).
+
+<p align="center"><img src="docs/mapa_toques.svg" width="400" alt="Mapa de calor dos toques na tela do Kindle: uma faixa horizontal de fantasmas no meio da tela, uma coluna perto de x 710 e as duas áreas aceitas tracejadas nos cantos de baixo"></p>
+
+<p align="center"><sub>Vermelho: onde os toques caem (mais escuro, mais toques). Tracejado: as áreas aceitas, verde para voltar e azul para avançar.
+As poucas células dentro das áreas são, quase todas, toques de verdade.</sub></p>
 
 O que os dados mostraram:
 
-- **386 toques** (215 + 171) concentrados **numa faixa só: y 480 a 650**. Na primeira sessão, 175 de 215 vieram com 2 dedos "simultâneos".
-- Uma segunda área de fantasmas: uma coluna em **x ≈ 763, y 1290 a 1420**, com toques de 23 a 26 ms ou arrastando.
-- Muitos fantasmas duram **menos de 50 ms**; os toques de verdade duraram **de 350 a 520 ms**.
+- **569 toques**, 344 deles com 2 dedos "simultâneos", concentrados **numa faixa só: y 480 a 650** (linhas em y ≈ 496 e y ≈ 612).
+- Uma **coluna de fantasmas** que mudou de lugar: em 17/11 ficava em x ≈ 763 (só embaixo); em 25/11, em x 702-718, da tela inteira.
+  Ela continua fora das áreas, que começam em x 820.
+- Os únicos fantasmas que já caíram dentro das áreas duraram **37 e 38 ms**. Os toques de verdade para virar página duraram **de 49 a 124 ms**.
 - Toques de propósito nos quatro cantos confirmaram a orientação dos eixos.
 
 **Áreas definitivas:** avançar em x 820-1072 e voltar em x 0-300, ambas em y 900-1448 (a metade de baixo das laterais).
-**Simulando o filtro nas duas gravações, nenhum fantasma é aceito.**
+**Duração mínima:** começou em 60 ms; a gravação de 25/11 mostrou que isso recusava 2 de 11 toques de verdade, e o mínimo passou para 45 ms.
+**Simulando o filtro em todas as gravações, nenhum fantasma é aceito, e todos os toques de verdade para virar página são.**
 
 ## A página web
 
@@ -107,6 +115,8 @@ tools/mapa_toques.py                mapa de calor e estatísticas a partir do lo
 tools/teste_plugin.py               teste do plugin no PC (LuaJIT) com módulos falsos do KOReader
 tools/teste_plugin_stubs.lua        os módulos falsos
 docs/jailbreak.md                   passo a passo e diário do projeto
+docs/mapa_toques.svg                mapa de calor das gravações
+dados/                              logs crus das gravações de toque
 ```
 
 ## Como reproduzir

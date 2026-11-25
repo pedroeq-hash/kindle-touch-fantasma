@@ -61,7 +61,7 @@ def svg(lista, areas):
     partes = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {LARGURA} {ALTURA}" width="536" height="724">',
               f'<rect width="{LARGURA}" height="{ALTURA}" fill="#fff" stroke="#000" stroke-width="4"/>']
     for (cx, cy), n in cont.items():
-        alfa = 0.15 + 0.85 * n / maximo
+        alfa = 0.25 + 0.75 * (n / maximo) ** 0.5  # raiz: células com poucos toques continuam visíveis
         partes.append(f'<rect x="{cx * CELULA}" y="{cy * CELULA}" width="{CELULA}" height="{CELULA}" '
                       f'fill="#d00" fill-opacity="{alfa:.2f}"><title>{n} toques</title></rect>')
     for i, (x1, y1, x2, y2) in enumerate(areas):
