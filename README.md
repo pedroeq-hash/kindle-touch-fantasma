@@ -71,9 +71,15 @@ O que os dados mostraram:
 
 Servida pelo próprio Kindle (porta 8090), tudo embutido num só HTML, sem fonte nem script de fora:
 
+<p align="center">
+  <img src="docs/pagina-livro.jpg" width="320" alt="Página no celular: livro aberto com página atual e controle de fonte, botão de enviar livro e a biblioteca">
+  <img src="docs/pagina-ajustes.jpg" width="320" alt="Página no celular: cadastro de rede Wi-Fi, gravação de toques e o botão de sair do KOReader">
+</p>
+
 - enviar livros (EPUB, PDF, MOBI, AZW3, FB2, CBZ, DJVU), vários de uma vez, com barra de progresso;
 - abrir um livro no Kindle, renomear (a posição de leitura acompanha) e apagar;
-- ver o livro aberto, a página atual, ir para uma página e a bateria;
+- ver o livro aberto e a página atual, ir para uma página e mudar o tamanho da fonte (em EPUB, MOBI, AZW3 e FB2);
+- ver a bateria;
 - cadastrar redes Wi-Fi no Kindle (uso pensado: o hotspot do celular, para funcionar fora de casa);
 - gravar toques e sair do KOReader (saída de emergência).
 
@@ -149,7 +155,7 @@ python -I tools\teste_plugin.py <pasta>
 ```
 
 O segundo teste carrega o `main.lua` num LuaJIT (o mesmo do KOReader) com módulos falsos e confere a página e as rotas:
-escape de HTML, caminhos maliciosos (`../../etc/passwd`), livro aberto que não pode ser apagado nem renomeado, validação do Wi-Fi e da página.
+escape de HTML, caminhos maliciosos (`../../etc/passwd`), livro aberto que não pode ser apagado nem renomeado, validação do Wi-Fi, da página e dos limites da fonte.
 A página gerada fica em `<pasta>\pagina.html`.
 
 ## Licença
