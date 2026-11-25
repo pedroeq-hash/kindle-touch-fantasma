@@ -49,6 +49,15 @@ L.globals().ultimo_tick()
 ev = L.globals().evento_enviado; assert (ev.name, ev.args) == ("GotoPage", 200), (ev.name, ev.args)
 for n in ("0", "258", "1.5", "abc", ""):
     assert req("GET /pagina?n=" + n).startswith("HTTP/1.0 400"), "página " + n
+assert 'data-fonte="2"' in corpo and "<b>22</b>" in corpo, "controle de fonte"
+r = req("GET /fonte?d=2"); assert r.startswith("HTTP/1.0 200") and r.endswith("Fonte: 24"), r
+L.globals().ultimo_tick()
+ev = L.globals().evento_enviado; assert (ev.name, ev.args) == ("SetFontSize", 24), (ev.name, ev.args)
+for d in ("0", "abc", "11", "1.5", ""):
+    assert req("GET /fonte?d=" + d).startswith("HTTP/1.0 400"), "fonte " + d
+assert req("GET /fonte?d=-10").endswith("Fonte: 12") and req("GET /fonte?d=-2").endswith("Fonte: 20"), "limite mínimo"
+L.execute('package.loaded["apps/reader/readerui"].instance.font = nil')  # PDF: sem módulo de fonte
+assert req("GET /fonte?d=2").startswith("HTTP/1.0 409") and 'data-fonte' not in req("GET /"), "PDF sem fonte"
 G = L.globals()
 L.execute("removidos = {}")  # spidercat volta (foi apagado acima)
 r = req("PUT /renomear?f=Downloads%2FItems01%2Ff-scott-fitzgerald-o-grande-gatsby.pdf-cdeKey_5AK3DW2JSKNSHRX7JU6CJ5SINFN3SJH5.pdf&nome=%20O%20Grande%20Gatsby%20")

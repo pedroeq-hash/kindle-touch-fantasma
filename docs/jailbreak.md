@@ -81,6 +81,9 @@ Com isso, escolhemos as duas áreas limpas e ajustamos `CONFIG` no topo de `kore
 - 18/11/2026: a página mostra a **bateria** (`Device:getPowerDevice()`), **renomeia** livros (lápis; mantém pasta e extensão, leva junto
   a posição de leitura com `DocSettings.updateLocation` e recusa o livro aberto e os caracteres que a FAT não aceita) e, no cartão
   "Lendo agora", tem **Página [15] / 257 · Ir** (evento `GotoPage`, o mesmo do "ir para página" do KOReader). **Renomear e ir para página testados pelo dono (25/11/2026): funcionam.**
+- 25/11/2026: no cartão "Lendo agora", **Fonte [A−] 22 [A+]** muda o tamanho da fonte de 2 em 2 (evento `SetFontSize`, o mesmo do
+  menu de fonte do KOReader, com os mesmos limites de 12 a 255). Só aparece em livros com texto ajustável (EPUB, MOBI, AZW3, FB2), não em
+  PDF, CBZ ou DJVU. Depois do ajuste a página recarrega, porque o total de páginas muda. **Testado pelo dono em 25/11/2026: funciona.**
 - Na primeira versão da página nova, os botões de abrir livro, gravar e sair não faziam nada: um `<button>` sem `type` conta como
   `submit`, e o JavaScript ignorava todos os `submit`. Corrigido em 17/11/2026 (agora ignora só o botão que pertence a um formulário).
   O `.txt` saiu da lista porque em `documents` só havia logs do sistema e o `My Clippings`.

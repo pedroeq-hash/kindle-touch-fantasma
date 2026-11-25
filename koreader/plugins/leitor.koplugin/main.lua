@@ -238,6 +238,13 @@ local function paginas()
     if ok and atual and total then return atual, total end
 end
 
+-- Tamanho da fonte do livro aberto; nil em PDF/CBZ/DJVU, que não têm o módulo de fonte do KOReader.
+local function fonte_atual()
+    local RUI = package.loaded["apps/reader/readerui"]
+    local i = RUI and RUI.instance
+    return i and i.font and i.document and i.document.configurable and i.document.configurable.font_size
+end
+
 local function bateria_txt()
     local ok, txt = pcall(function()
         local p = Device:getPowerDevice()
@@ -316,6 +323,10 @@ h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;
 .ren:active{color:var(--acc);background:var(--line)}
 .ir{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--sub);font-size:16px}
 .ir input{width:88px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:17px;text-align:center}
+.fonte{display:flex;align-items:center;gap:10px;margin-top:10px;color:var(--sub);font-size:16px}
+.fonte button{width:48px;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.fonte button:first-of-type{margin-left:auto}
+.fonte b{min-width:30px;text-align:center;color:var(--ink);font-size:17px}
 .ir button{margin-left:auto;padding:10px 20px;border:0;border-radius:10px;background:var(--acc);color:var(--card);font:inherit;font-weight:600;cursor:pointer}
 .vazio{padding:28px 18px;color:var(--sub);text-align:center}
 .ajustes button{display:flex;gap:12px;justify-content:space-between;align-items:center;width:100%;padding:14px 16px;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
@@ -373,6 +384,7 @@ try{
 if(b.dataset.f){aviso('Abrindo no Kindle…');await chamar('/abrir?f='+b.dataset.f);recarregar(2500,6)}
 else if(b.dataset.apagar){if(!confirm('Apagar “'+b.dataset.t+'” do Kindle?'))return;
 const t=await chamar('/apagar?f='+b.dataset.apagar,'DELETE');b.closest('li').remove();aviso(t,2500)}
+else if(b.dataset.fonte){aviso(await chamar('/fonte?d='+b.dataset.fonte),1500);recarregar(1500,4)} // recarrega: o total de páginas muda
 else if(b.dataset.renomear){const novo=prompt('Novo nome do livro:',b.dataset.t);if(!novo||novo.trim()===b.dataset.t)return;
 aviso(await chamar('/renomear?f='+b.dataset.renomear+'&nome='+encodeURIComponent(novo.trim()),'PUT'),1500);setTimeout(()=>location.reload(),900)}
 else if(b.dataset.url){if(b.dataset.aviso&&!confirm(b.dataset.aviso))return;const t=await chamar(b.dataset.url);
@@ -402,7 +414,10 @@ local function montar_pagina()
             local pag, total = paginas()
             local ir = pag and string.format('<form class="ir" id="ir"><span>Página</span><input name="n" type="number" inputmode="numeric" min="1" max="%d" value="%d" required aria-label="Ir para a página">'
                 .. '<span>/ %d</span><button type="submit">Ir</button></form>', total, pag, total) or ""
-            lendo = '<div class="lendo"><small>Lendo agora</small><b class="serif">' .. t .. '</b>' .. ir .. '</div>'
+            local fonte = fonte_atual()
+            local ajuste = fonte and string.format('<div class="fonte"><span>Fonte</span><button data-fonte="-2" aria-label="Diminuir a fonte">A−</button>'
+                .. '<b>%d</b><button data-fonte="2" aria-label="Aumentar a fonte">A+</button></div>', fonte) or ""
+            lendo = '<div class="lendo"><small>Lendo agora</small><b class="serif">' .. t .. '</b>' .. ir .. ajuste .. '</div>'
         end
         table.insert(itens, string.format(
             '<li%s><button class="abrir" data-f="%s"><span class="t serif">%s</span><span class="m"><span class="fmt">%s</span>%s · %s</span></button>'
@@ -690,6 +705,15 @@ function Leitor:onRequest(data, client)
         end
         UIManager:nextTick(function() UIManager:sendEvent(Event:new("GotoPage", n)) end)
         return self:responder(client, 200, "text/plain", "Indo para a página " .. n .. ".")
+    elseif caminho == "/fonte" then
+        local atual, d = fonte_atual(), tonumber(p.d)
+        if not atual then return self:responder(client, 409, "text/plain", "Esse livro não tem fonte ajustável (PDF ou quadrinhos).") end
+        if not d or d ~= math.floor(d) or d == 0 or math.abs(d) > 10 then
+            return self:responder(client, 400, "text/plain", "Ajuste inválido.")
+        end
+        local novo = math.max(12, math.min(atual + d, 255)) -- mesmos limites do ReaderFont:onSetFontSize
+        UIManager:nextTick(function() UIManager:sendEvent(Event:new("SetFontSize", novo)) end)
+        return self:responder(client, 200, "text/plain", "Fonte: " .. novo)
     elseif caminho == "/gravar" then
         set_gravacao(p.on == "1")
         return self:responder(client, 200, "text/plain", "ok")
