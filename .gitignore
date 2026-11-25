@@ -1,0 +1,11 @@
+# Livros ficam fora do repositório (direito autoral e tamanho)
+temp/
+*.epub
+*.pdf
+*.mobi
+*.azw3
+*.fb2
+*.cbz
+*.djvu
+
+__pycache__/
