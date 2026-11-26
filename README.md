@@ -6,6 +6,8 @@ medi onde caem os toques fantasmas e escrevi um plugin para o [KOReader](https:/
 
 Resultado: o aparelho voltou a ser usado como leitor no dia a dia, sem nenhuma página virada pelos fantasmas.
 
+<p align="center"><img src="docs/foto-kindle.jpg" width="340" alt="O Kindle de capa azul sobre um tecido vermelho, com o KOReader aberto em A Cartomante, de Machado de Assis"></p>
+
 > Projeto pessoal e independente, sem relação com a Amazon. Os livros usados vêm de fontes sem DRM
 > (domínio público e lojas que vendem sem DRM).
 
